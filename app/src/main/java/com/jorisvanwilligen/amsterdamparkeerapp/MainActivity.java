@@ -17,12 +17,19 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.ResponseHandler;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.BasicResponseHandler;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+
+
 
 
 public class MainActivity extends Activity implements LocationListener {
@@ -61,13 +68,15 @@ public class MainActivity extends Activity implements LocationListener {
             int hour = c.get(Calendar.HOUR);
             int minute = c.get(Calendar.MINUTE);                                                                          //Url maken met de gegevens
 
-            url = ("http://divvapi.parkshark.nl/apitest.jsp?action=plan&to_lat=51.5&to_lon=4.9&dd=28&mm=12&yy=2013&h=12&m=50&dur=2&opt_routes=y&opt_routes_ret=n&opt_am=n&opt_rec=y"); // Tijdelijk deze om te kijken of het werkt
+            url = ("http://divvapi.parkshark.nl/apitest.jsp?action=plan&to_lat="+dLatitude+"&to_lon="+dLongitude+"&dd="+day+"&mm=12&yy="+year+"&h="+hour+"&m="+minute+"&dur=2&opt_routes=y&opt_routes_ret=n&opt_am=n&opt_rec=y");
+            //url = ("http://www.divvapi.parkshark.nl/rest/plan?to_lat="+dLatitude+"&to_lon="+dLongitude+"&dd="+day+"&mm="+month+"&yy="+year+"&h="+hour+"&m="+minute+"&dur=2&opt_routes=y&opt_routes_ret=n&opt_am=n&opt_rec=y");
+
 
             BackTaskGetJSON backTaskGetJSON= new BackTaskGetJSON();
             backTaskGetJSON.execute();                                                                                     //JSON ophalen met method
             TextView laadBericht = (TextView) findViewById(R.id.laadBericht);
             laadBericht.setText("Gegevens Ophalen..");                                                                     //Laadbericht aanpassen
-
+            //laadBericht.setText(url); //debug
             menu_initialized = true;
         }
 
