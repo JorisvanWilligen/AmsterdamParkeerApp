@@ -1,22 +1,35 @@
 package com.jorisvanwilligen.amsterdamparkeerapp;
 
+
+import android.content.Intent;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.widget.TextView;
 
+
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+
+
 
 public class MapsActivity extends FragmentActivity {
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+
+
         setContentView(R.layout.activity_maps);
         setUpMapIfNeeded();
+
     }
 
     @Override
@@ -60,6 +73,47 @@ public class MapsActivity extends FragmentActivity {
      * This should only be called once and when we are sure that {@link #mMap} is not null.
      */
     private void setUpMap() {
-        mMap.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Marker"));
+        mMap.setMyLocationEnabled(true);                                                                                    //Eigen locatie laten zien
+        Intent intent = this.getIntent();                                                                                   //Intent aanmaken en variable van MainActivity ophalen.
+        double dLatitude = intent.getDoubleExtra("latitude", 51.4);
+        double dLongitude = intent.getDoubleExtra("longitude", 4.9);
+        String naam = intent.getStringExtra("naam");
+        String adress = intent.getStringExtra("adress");
+        String type = intent.getStringExtra("type");
+        int beschikbarePlaatsen = intent.getIntExtra("Beschikbaarheid", 1);
+
+
+        TextView Titel = (TextView) findViewById(R.id.titel);                                                               //Textview's aanpassen op geselecteerde parkeerplaats.
+        TextView info1 = (TextView) findViewById(R.id.info1);
+        TextView info2 = (TextView) findViewById(R.id.info2);
+        TextView beschikbaarheidText = (TextView) findViewById(R.id.beschikbaarheidText);
+        Titel.setText(naam);
+        info1.setText(adress);
+        info2.setText(type);
+
+        if (beschikbarePlaatsen == 0){                                                                                      //Tekst aanpassen als er geen, 1 of meerdere parkeerplaaten zijn.
+            beschikbaarheidText.setText("Geen beschikbare parkeerplaatsen gevonden.");
+        }else {
+            if (beschikbarePlaatsen == 1){
+                beschikbaarheidText.setText("1 beschikbare parkeerplaats gevonden.");
+            }else {
+                beschikbaarheidText.setText(beschikbarePlaatsen + " beschikbare parkeerplaatsen gevonden.");
+            }
+        }
+
+        mMap.addMarker(new MarkerOptions().position(new LatLng(dLatitude, dLongitude)).title("Beschikbare parkeerplaats")   //Marker met titel en locatie opgeven
+                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN)));                            //Blauw icontje
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(dLatitude, dLongitude), 15)) ;                         //Inzoomen
+
+
+
+
+
+
+
+
+
+
+
     }
 }
